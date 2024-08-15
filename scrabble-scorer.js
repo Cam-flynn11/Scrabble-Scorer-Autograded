@@ -46,7 +46,7 @@ let simpleScorer = function (word) {
   for (let index = 0; index < word.length; index++) {
     letterScore += 1;
   }
-  return `Score for "${word}": ` + letterScore;
+  return letterScore;
 };
 
 let vowelBonusScorer = function (word) {
@@ -60,10 +60,17 @@ let vowelBonusScorer = function (word) {
       letterScore += 1;
     }
   }
-  return `Score for "${word}": ` + letterScore;
+  return letterScore;
 };
 
-let scrabbleScorer;
+// TODO: Read the instruction. You will be using newPointStructure from line 41 here.
+let scrabbleScorer = function (word) {
+  let points = 0;
+  for (let index = 0; index < word.length; index++) {
+    points += newPointStructure[word[index]];
+  }
+  return points;
+};
 
 const scoringAlgorithms = [
   {
@@ -79,32 +86,58 @@ const scoringAlgorithms = [
   {
     name: "Scrabble",
     description: "The traditional scoring algorithm.",
-    scorerFunction: oldScrabbleScorer,
+    // TODO: Once scrabbleScorer is done, replace oldScrabbleScorer here with scrabbleScorer.
+    scorerFunction: scrabbleScorer,
   },
 ];
 
 function scorerPrompt() {
   console.log("Which scoring algorithm would you like to use?");
   console.log(
-    "0 - " + scoringAlgorithms[0].name + ": " + scoringAlgorithms[0].description + "\n",
-    "1 - " + scoringAlgorithms[1].name + ": " + scoringAlgorithms[1].description + "\n",
-    "2 - " + scoringAlgorithms[2].name + ": " + scoringAlgorithms[2].description 
+    "0 - " +
+      scoringAlgorithms[0].name +
+      ": " +
+      scoringAlgorithms[0].description +
+      "\n",
+    "1 - " +
+      scoringAlgorithms[1].name +
+      ": " +
+      scoringAlgorithms[1].description +
+      "\n",
+    "2 - " + scoringAlgorithms[2].name + ": " + scoringAlgorithms[2].description
   );
 
   let chosenNum = input.question("Enter 0, 1, or 2: ");
   return chosenNum;
 }
 
-function transform(oldPointStructure) {
+// {
+//   1: ["A", "E", "I", "O", "U", "L", "N", "R", "S", "T"],
+//   2: ["D", "G"],
+//   3: ["B", "C", "M", "P"],
+//   4: ["F", "H", "V", "W", "Y"],
+//   5: ["K"],
+//   8: ["J", "X"],
+//   10: ["Q", "Z"],
+// };
 
-  } 
+function transform(oldPointStructure) {
+  let newLetterPoint = {};
+
+  for (lineKey in oldPointStructure) {
+    let pointvalueOneArray = oldPointStructure[lineKey];
+
+    for (let index = 0; index < pointvalueOneArray.length; index++) {
+      newLetterPoint[pointvalueOneArray[index].toLowerCase()] = Number(lineKey);
+    }
+  }
+  return newLetterPoint;
+}
 
 function runProgram() {
   let retrieveInput = initialPrompt();
   let answers = scorerPrompt();
   let scorerFunction = scoringAlgorithms[answers].scorerFunction;
-  
-  // line 105 - need to make it accept whatever word is entered, not just travel \\
   console.log(scorerFunction(retrieveInput));
 }
 
