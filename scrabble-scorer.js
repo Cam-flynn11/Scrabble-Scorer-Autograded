@@ -91,7 +91,7 @@ const scoringAlgorithms = [
   },
 ];
 
-function scorerPrompt() {
+function scorerPrompt(retrieveInput) {
   console.log("Which scoring algorithm would you like to use?");
   console.log(
     "0 - " +
@@ -108,6 +108,8 @@ function scorerPrompt() {
   );
 
   let chosenNum = input.question("Enter 0, 1, or 2: ");
+  let scorerFunction = scoringAlgorithms[chosenNum].scorerFunction;
+  console.log(scorerFunction(retrieveInput));
   return chosenNum;
 }
 
@@ -136,9 +138,8 @@ function transform(oldPointStructure) {
 
 function runProgram() {
   let retrieveInput = initialPrompt();
-  let answers = scorerPrompt();
-  let scorerFunction = scoringAlgorithms[answers].scorerFunction;
-  console.log(scorerFunction(retrieveInput));
+  let answers = scorerPrompt(retrieveInput);
+  
 }
 
 // Don't write any code below this line //
